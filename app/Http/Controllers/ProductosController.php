@@ -33,7 +33,7 @@ class ProductosController extends Controller
             });
         }
 
-        $productos = $query->orderBy('precio_neto', $order)->paginate(12);
+        $productos = $query->orderBy('precio_neto', $order)->paginate(100);
 
         // Obtener las farmacias
         $farmacias = Farmacia::pluck('nombre_farmacia', 'rut_farmacia')->prepend('Todos', 'todos');
