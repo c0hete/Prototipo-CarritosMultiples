@@ -4,12 +4,12 @@ let carrito = {};
 // Función para actualizar el carrito en el LocalStorage
 function updateCart() {
     localStorage.setItem('carrito', JSON.stringify(carrito));
-  }
-  
+}
+
 function mostrarCarritos() {
     const carritoModal = new bootstrap.Modal(document.getElementById('carritoModal'));
     const carritoModalLabel = document.getElementById('carritoModalLabel');
-  
+
     const totalCarritos = getTotalCarritosActivos();
     carritoModalLabel.textContent = `Carritos de Compras: ${totalCarritos} en total`;
     const carritoModalBody = document.getElementById('carritoModalBody');
@@ -24,12 +24,12 @@ function mostrarCarritos() {
             const carrito = JSON.parse(localStorage.getItem(key));
 
             const div = document.createElement('div');
-            div.classList.add('carrito-container', 'p-3');
+            div.classList.add('carrito-container', 'p-3', 'carrito-hover');
 
             // Obtener el nombre de la farmacia y la sucursal desde los atributos del botón "Agregar al carrito"
             const farmaciaNombre = document.querySelector(`[data-sucursal-id="${sucursalId}"]`).getAttribute('data-farmacia-nombre');
             const sucursalNombre = document.querySelector(`[data-sucursal-id="${sucursalId}"]`).getAttribute('data-sucursal-nombre');
-            
+
             // Mostrar el nombre de la farmacia y la sucursal en el modal
             div.innerHTML = `
                 <div class="d-flex justify-content-between mb-2">
@@ -40,11 +40,10 @@ function mostrarCarritos() {
                     <p class="small-muted-text">Sucursal:</p>
                     <h6>${sucursalNombre}</h6>
                 </div>
-                `;
+            `;
 
             const ul = document.createElement('ul');
             ul.classList.add('productos-lista');
-
             let totalPrecios = 0;
 
             carrito.forEach(function (producto) {
@@ -93,13 +92,24 @@ function mostrarCarritos() {
 
             // Agregar total de precios al contenedor exterior
             const totalContainer = document.createElement('div');
-            totalContainer.classList.add('total-container');
-            totalContainer.textContent = `Total este de este carrito: $${formatoCantidad(totalPrecios.toFixed(0))}`;
-            div.appendChild(totalContainer);
+            totalContainer.classList.add('d-flex', 'justify-content-between', 'align-items-center', 'total-container');
+            totalContainer.textContent = `Total de este carrito: $${formatoCantidad(totalPrecios.toFixed(0))}`;
+
+            // Agregar botón para eliminar carrito
+            const btnEliminar = document.createElement('button');
+            btnEliminar.textContent = 'Eliminar carrito';
+            btnEliminar.classList.add('btn', 'btn-danger', 'eliminar-carrito');
+            btnEliminar.setAttribute('data-sucursal-id', sucursalId);
+            btnEliminar.addEventListener('click', function (e) {
+                e.stopPropagation();
+                eliminarCarrito(sucursalId);
+            });
+
+            totalContainer.appendChild(btnEliminar); // Agregar botón al contenedor de total
+            div.appendChild(totalContainer); // Agregar contenedor de total al div principal
 
             carritoModalBody.appendChild(div);
 
-            // Sumar el total de precios de este carrito al total general
             totalGeneral += totalPrecios;
         }
     }
@@ -113,8 +123,6 @@ function mostrarCarritos() {
 function formatoCantidad(cantidad) {
     return cantidad.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
 }
-
-// Resto del código...
 
 // Evento click para los botones "Agregar al carrito"
 document.querySelectorAll('.add-to-cart').forEach(function (button) {
@@ -144,19 +152,27 @@ document.querySelectorAll('.add-to-cart').forEach(function (button) {
                 cantidad: 1,
                 concentracion: concentracion,
                 farmacia_nombre: farmaciaNombre, // Nuevo
-                sucursal_nombre: sucursalNombre // Nuevo
+                direccion_sucursal: sucursalNombre // Nuevo
             });
         }
 
         // Guardar el carrito de la sucursal en localStorage
         localStorage.setItem('carrito_' + sucursalId, JSON.stringify(carritoSucursal));
 
-        alert('Producto agregado al carrito de la sucursal ' + sucursalId);
+        // Mostrar una alerta de éxito utilizando SweetAlert
+        Swal.fire({
+            icon: 'success',
+            title: 'Producto agregado al carrito',
+            text: `"${nombre}" ha sido agregado al carrito ${farmaciaNombre} - ${sucursalNombre}`,
+            showConfirmButton: false,
+            timer: 3000
+        });
 
         // Mostrar los productos en el carrito modal
         mostrarCarritos();
     });
 });
+
 
 
 // Mostrar los productos del carrito al cargar la página
@@ -183,9 +199,17 @@ function calcularTotalGeneral() {
 // Función para mostrar el total general de todos los carritos en el pie de página del modal
 function mostrarTotalGeneralEnModal() {
     const totalGeneral = calcularTotalGeneral();
+
+    // Calcular el total con IVA y el 10% adicional
+    const totalConIva = totalGeneral * 1.19 * 1.1;
+
+    // Formatear el total con formato de miles
+    const totalConIvaFormateado = formatoCantidad(totalConIva.toFixed(0));
+
     const totalCarritosElement = document.getElementById('totalCarritos');
-    totalCarritosElement.textContent = `Total de todos los carritos: $${totalGeneral.toFixed(0)}`;
+    totalCarritosElement.textContent = `Total de todos los carritos: $${totalConIvaFormateado}`;
 }
+
 
 // Llama a la función para mostrar el total general al cargar el modal y cada vez que se actualice la lista de carritos
 mostrarTotalGeneralEnModal();
@@ -202,4 +226,27 @@ function getTotalCarritosActivos() {
     }
   
     return totalCarritos;
+}
+
+// Función para eliminar un carrito del localStorage
+function eliminarCarrito(sucursalId) {
+    // Mostrar una alerta de confirmación utilizando SweetAlert
+    Swal.fire({
+        title: '¿Estás seguro?',
+        text: 'Estás a punto de eliminar este carrito. Esta acción no se puede deshacer.',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Eliminar',
+        cancelButtonText: 'Cancelar'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            // Si se confirma la eliminación, eliminar el carrito del localStorage
+            const carritoKey = 'carrito_' + sucursalId;
+            localStorage.removeItem(carritoKey);
+            // Mostrar una alerta de éxito
+            Swal.fire('Carrito eliminado', 'El carrito ha sido eliminado exitosamente.', 'success');
+            // Actualizar la vista después de eliminar
+            mostrarCarritos();
+        }
+    });
 }

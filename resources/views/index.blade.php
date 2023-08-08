@@ -43,7 +43,7 @@
                                                             data-product-concentracion="{{ $producto->concentracion }}"
                                                             data-sucursal-id="{{ $producto->id_sucursal }}"
                                                             data-farmacia-nombre="{{ $producto->sucursal->farmacia->nombre_farmacia }}" 
-                                                            data-sucursal-nombre="{{ $producto->sucursal->nombre_sucursal }}"> 
+                                                            data-sucursal-nombre="{{ $producto->sucursal->direccion_sucursal }}"> 
                                                             Agregar al carrito
                                                         </button>
                                                         
