@@ -1,0 +1,118 @@
+.modal-dialog-right {
+    width: 490px !important; /* Ajusta el ancho según tus necesidades */
+    margin-left: auto !important;
+    margin-right: 0 !important;
+    transform: translateX(100%) !important;
+    height: 100% !important;
+    display: flex !important;
+    align-items: stretch !important;
+  }
+  
+  .modal.fade.right .modal-dialog.modal-dialog-right {
+    transform: translateX(0) !important;
+  }
+  
+  .modal-content {
+    height: 100% !important;
+    display: flex !important;
+    flex-direction: column !important;
+  }
+  
+  .modal-body {
+    flex-grow: 1 !important;
+    overflow-y: auto !important;
+  }
+  
+  .quantity-input-modal {
+    width: 40px;
+    border: none;
+    text-align: center;
+    padding: 0;
+    -webkit-appearance: none;
+   appearance: textfield;
+  }
+  
+  .quantity-input-modal::-webkit-inner-spin-button,
+  .quantity-input-modal::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+  
+  .quantity-controls {
+    display: flex;
+    align-items: center;
+    height: 100%;
+  }
+  
+  .quantity-controls button {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    outline: none;
+  }
+  
+  .modal-body .quantity-controls {
+    justify-content: center; /* Para centrar horizontalmente el contenido */
+  }
+  
+  .btn-carrito {
+    display: flex;
+    align-items: center;
+}
+.carrito-contador {
+    margin-left: 5px;
+}
+  
+.producto-card {
+  transition: all 0.3s ease-in-out; /* Esto añade una transición suave al cambiar las propiedades */
+}
+
+.producto-card-hover {
+  background-color: #e0e0e0 !important; /* Color de fondo más oscuro */
+  box-shadow: 0 12px 24px 0 rgba(0,0,0,0.3) !important; /* Sombra más grande y oscura */
+}
+
+.btn {
+  transition: all 0.2s ease;
+}
+.btn {
+  cursor: pointer;
+}
+.card {
+  margin-bottom: 1rem;
+}
+.carrito-container {
+    border: 1px solid #4fa84a;
+    border-radius: 5px;
+    padding: 10px;
+    margin-bottom: 10px;
+    background-color: #f9f9f9;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+.productos-lista {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .productos-lista li {
+    margin-bottom: 8px;
+  }
+  
+  .total-container {
+    margin-top: auto;
+    text-align: right;
+    font-weight: bold;
+  }
+
+  /* Estilos para el texto pequeño y de color gris */
+.small-muted-text {
+    font-size: 14px; /* Tamaño de fuente más pequeño */
+    color: #6c757d; /* Color gris */
+  }
+  
+  
+
+
